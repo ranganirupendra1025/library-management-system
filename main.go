@@ -13,7 +13,7 @@ func main(){
 		log.Fatal("error in connecting")
 	}
 	defer DB.Close()
-	script,err:=ioutil.ReadFile("init.sql")
+	script,err:=ioutil.ReadFile("db/init.sql")
 	if err!=nil{
 		//fmt.Println(err)
 		log.Fatal(err)
