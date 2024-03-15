@@ -5,13 +5,12 @@ import (
 )
 
 type User struct {
-	user_id               int
-	username              string
-	password              string
-	age                   int
-	is_approved           bool
-	email_address         string
-	is_admin              bool
-	subscription_id       int
-	subscription_end_date time.Time
+	UserId              int
+	Username            string
+	Password            string
+	Age                 int
+	EmailAddress        string
+	IsAdmin             bool
+	SubscriptionId      int
+	SubscriptionEndDate time.Time
 }
