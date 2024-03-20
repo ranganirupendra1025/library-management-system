@@ -1,5 +1,6 @@
 package models
 
+import "time"
 
 type User struct {
 	Userid   int
@@ -8,5 +9,6 @@ type User struct {
 	Email    string
 	Password string
 	Isadmin  bool
-
+	Subid    int
+	Subdate  time.Time
 }
