@@ -7,13 +7,12 @@ import (
 	"net/http"
 )
 
-func GetAllUsers(db *sql.DB) http.HandlerFunc {
+func GetAllSubscription(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		users, err := service.GettingUsers(db)
+		users, err := service.GetAllSubscription(db)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		}
 		json.NewEncoder(w).Encode(users)
 	}
-
 }

@@ -1,0 +1,6 @@
+GET http://localhost:7111/users
+
+Content-Type: application/json
+
+
+//this is for checking sample api u guys can use postman too
