@@ -1,5 +1,6 @@
 package models
 
+
 import "time"
 
 type User struct {
@@ -12,3 +13,4 @@ type User struct {
 	Subid    int
 	Subdate  time.Time
 }
+

@@ -5,7 +5,8 @@ import (
 	"lms/models"
 )
 
-// I have added refernce code for getting user from databse  u guys can change as per the requirement
+//I have added refernce code for getting user from databse  u guys can change as per the requirement
+
 func GettingUsers(db *sql.DB) ([]models.User, error) {
 	var users []models.User
 	rows, err := db.Query("SELECT id,username,age,email_address,password,is_admin FROM  users")

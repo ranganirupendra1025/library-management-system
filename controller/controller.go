@@ -19,6 +19,7 @@ func GetAllUsers(db *sql.DB) http.HandlerFunc {
 
 }
 
+
 func RegisterUser(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var newUser models.User
