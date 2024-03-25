@@ -33,6 +33,7 @@ func main() {
 	//this was sample api for getting users from databse using this u can change as per ur need
 	http.HandleFunc("/users", controller.GetAllUsers(DB))
 	http.HandleFunc("/lms/subscriptions", controller.GetAllSubscription(DB))
+	http.HandleFunc("/registerusers", controller.RegisterUser(DB))
 	//server setup
 	err = http.ListenAndServe(":7111", nil)
 	if err != nil {

@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS user_book_transaction(
     actual_return_date DATE NOT NULL
     );
 
- 
-
-INSERT INTO users(username,age,email_address,password,is_admin) VALUES('admin',34,'admin@gmail.com','adminpass',true);
+INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES('admin',34,'admin@gmail.com','adminpass',true,1,'2024-03-20');
 
 INSERT INTO subscription(name,duration,cost) VALUES('Free',null, 0),('Monthly','30 days', 500),('Quarterly', '90 days', 1000),('Yearly', '365 days', 2000);
