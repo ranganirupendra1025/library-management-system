@@ -24,6 +24,7 @@ func main() {
 		//fmt.Println(err)
 		log.Fatal(err)
 	}
+	_, err = DB.Exec(string(script))
 
 	if err != nil {
 		log.Fatal(err)
