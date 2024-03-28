@@ -1,7 +1,13 @@
+ DROP TABLE user_book_transaction;
+DROP TABLE users;
+ DROP TABLE subscription;
+ DROP TABLE book;
+
+ 
  CREATE TABLE IF NOT EXISTS subscription(
     id SERIAL PRIMARY KEY,
     name  VARCHAR(100) NOT NULL,
-    duration INTERVAL NOT NULL,
+    duration INTEGER NOT NULL ,
     cost INTEGER NOT NULL
     ); 
 
@@ -35,7 +41,7 @@ CREATE TABLE IF NOT EXISTS user_book_transaction(
     book_return BOOLEAN DEFAULT FALSE,
     actual_return_date DATE NOT NULL
     );
-
+INSERT INTO subscription(name,duration,cost) VALUES('Free',0, 0),('Monthly',30, 500),('Quarterly', 90, 1000),('Yearly', 365, 2000);
 INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES('admin',34,'admin@gmail.com','adminpass',true,1,'2024-03-20');
 
-INSERT INTO subscription(name,duration,cost) VALUES('Free',null, 0),('Monthly','30 days', 500),('Quarterly', '90 days', 1000),('Yearly', '365 days', 2000);
+--DROP TABLE subscription

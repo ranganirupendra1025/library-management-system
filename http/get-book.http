@@ -1,0 +1,2 @@
+GET http://localhost:7111/getbook/1
+Content-Type: application/json

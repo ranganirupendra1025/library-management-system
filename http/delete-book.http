@@ -1,0 +1,6 @@
+DELETE http://localhost:7111/delete/1
+Content-Type: application/json
+
+{
+    "username":"admin"
+}

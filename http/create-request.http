@@ -1,3 +1,0 @@
-POST http://localhost:7111/users
-
-Content-Type: application/json
