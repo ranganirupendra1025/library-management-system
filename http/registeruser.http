@@ -1,0 +1,11 @@
+POST http://localhost:7111/registerusers
+Content-Type: application/json
+
+{
+  "username":"Not an admin",
+   "age":34,
+   "email":"admin12@gmaail.com",
+ "password":"12343534563",
+ "is_admin":false,
+ "subscription_end_date":"2024-05-04"
+}

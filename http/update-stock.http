@@ -1,0 +1,10 @@
+PUT http://localhost:7111/update/1
+Content-Type: application/json
+
+
+{
+    "Stockcount":10000,
+    "username":"admin"
+    
+    
+}

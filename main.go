@@ -30,10 +30,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//this was sample api for getting users from databse using this u can change as per ur need
+    /*initailly add books and check with delete update book api ,you need to pass 
+	valid username then only it will be executed.*/
 	http.HandleFunc("/users", controller.GetAllUsers(DB))
 	http.HandleFunc("/lms/subscriptions", controller.GetAllSubscription(DB))
 	http.HandleFunc("/registerusers", controller.RegisterUser(DB))
+	http.HandleFunc("/addbooks",controller.Addingbooks(DB))
+	http.HandleFunc("/books",controller.GetAllBooks(DB))
+	http.HandleFunc("/getbook/",controller.GetSingleBook(DB))
+	http.HandleFunc("/update/",controller.UpdateStockBooks(DB))
+	http.HandleFunc("/delete/",controller.Deletingbooks(DB))
+	http.HandleFunc("/getuser/",controller.GetSingleUser(DB))
+	http.HandleFunc("/deleteuser/",controller.DeletingUser(DB))
+
 	//server setup
 	err = http.ListenAndServe(":7111", nil)
 	if err != nil {
