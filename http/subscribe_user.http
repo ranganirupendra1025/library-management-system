@@ -1,0 +1,15 @@
+POST http://localhost:7111/addbooks
+Content-Type: application/json
+
+
+{
+    "genre":"genre1",
+    "author":"author1",
+    "publisher":"publisher1",
+    "stockcount":1000,
+    "Subid":"2",
+    "username":"admin
+    
+    
+ 
+}

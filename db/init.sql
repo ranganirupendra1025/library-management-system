@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS user_book_transaction(
     book_return BOOLEAN DEFAULT FALSE,
     actual_return_date DATE NOT NULL
     );
-INSERT INTO subscription(name,duration,cost) VALUES('Free',0, 0),('Monthly',30, 500),('Quarterly', 90, 1000),('Yearly', 365, 2000);
+INSERT INTO subscription(name,duration,cost) VALUES('Monthly',30, 500),('Quarterly', 90, 1000),('Yearly', 365, 2000);
 INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES('admin',34,'admin@gmail.com','adminpass',true,1,'2024-03-20');
 
 --DROP TABLE subscription
