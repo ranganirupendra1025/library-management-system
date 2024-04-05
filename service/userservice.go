@@ -2,7 +2,9 @@ package service
 
 import (
 	"database/sql"
+	"errors"
 	"lms/models"
+	"lms/utils"
 )
 
 //I have added refernce code for getting user from databse  u guys can change as per the requirement
@@ -33,8 +35,13 @@ func GettingUsers(db *sql.DB) ([]models.User, error) {
 
 func RegisterUser(db *sql.DB, newUser models.User) error {
 	// Insert the new user into the database
-	_, err := db.Exec("INSERT INTO users (username, age, email_address, password, is_admin,subscription_id, subscription_end_date) VALUES ($1, $2, $3, $4, $5, $6, $7)", newUser.Username, newUser.Age, newUser.Email, newUser.Password, newUser.Isadmin, newUser.Subid, newUser.Subdate)
+	query := "INSERT INTO users (username, age, email_address, password, is_admin) VALUES ($1, $2, $3, $4, $5)"
+	password,err:=utils.Hashpassword(newUser.Password)
 	if err != nil {
+		return err
+	}
+	_,err=db.Exec(query,newUser.Username, newUser.Age, newUser.Email, password, newUser.Isadmin)
+	if err!=nil {
 		return err
 	}
 	return nil
@@ -67,4 +74,21 @@ func UpdateSubscription(db *sql.DB, user models.User) error {
 		return err
 	}
 	return nil
+}
+func Login(db *sql.DB,user *models.Login) error{
+	query:="SELECT id,password from users where email_address=$1"
+	row:=db.QueryRow(query,&user.Email)
+	var retrivedpass string
+	err:=row.Scan(&user.Id,&retrivedpass)
+	if err!=nil{
+		return err
+	}
+    passwordValid:=utils.Checkpassword(user.Password,retrivedpass)
+	if !passwordValid {
+	return errors.New("credentials invalid")
+	}
+	return nil
+	
+
+
 }

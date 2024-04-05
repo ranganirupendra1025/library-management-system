@@ -107,3 +107,26 @@ func DeletingUser(db *sql.DB) http.HandlerFunc {
 
 	}
 }
+
+
+func LoginUser(db *sql.DB) http.HandlerFunc{
+	return func(w http.ResponseWriter, r *http.Request) {
+		var user models.Login
+		err:=json.NewDecoder(r.Body).Decode(&user)
+		if err!=nil{
+			http.Error(w,err.Error(),http.StatusBadRequest)
+		}
+		err=service.Login(db,&user)
+		if err!=nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+
+		}
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "User login Successfully")
+
+
+	}
+}
+
+

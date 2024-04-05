@@ -1,0 +1,7 @@
+POST  http://localhost:7111/loginuser
+Content-Type: application/json
+
+{
+  "email":"admin12@gmaail.com",
+ "password":"123435563"
+}

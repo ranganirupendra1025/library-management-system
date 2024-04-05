@@ -6,6 +6,5 @@ Content-Type: application/json
    "age":34,
    "email":"admin12@gmaail.com",
  "password":"12343534563",
- "is_admin":false,
- "subscription_end_date":"2024-05-04"
+ "is_admin":false
 }
