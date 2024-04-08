@@ -104,7 +104,7 @@ func UpdateStockBooks(db *sql.DB) http.HandlerFunc{
 		id,err:=strconv.Atoi(idstr)
 
 		if err!=nil{
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "No id specified", http.StatusBadRequest)
 			return
 
 		}
@@ -168,7 +168,7 @@ func Deletingbooks(db *sql.DB) http.HandlerFunc{
 		id,err:=strconv.Atoi(idstr)
 
 		if err!=nil{
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "No id specified", http.StatusBadRequest)
 			return
 
 		}

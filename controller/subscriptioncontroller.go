@@ -36,20 +36,21 @@ func SubscribeUser(db *sql.DB) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		subscription, err := service.GetSubscriptionById(db, userSub.Subid)
+	  subscription, err := service.GetSubscriptionById(db, userSub.Subid)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "No subscription available with this id", http.StatusInternalServerError)
 			return
 		}
-		userSub.Subdate = <-time.After(time.Duration(subscription.Duration*24*60*60*10 ^ 9))
+	userSub.Subdate = <-time.After(time.Duration(subscription.Duration*24*60*60*10 ^ 9))
+	//fmt.Println(userSub)
 		err = service.UpdateSubscription(db, userSub)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 		w.WriteHeader(http.StatusCreated)
 		//fmt.Fprintf(w, "Book was added")*/
+		//json.NewEncoder(w).Encode("User Subscrobed")
 
 		json.NewEncoder(w).Encode(fmt.Sprintf("User Subscribed Successsfully. Subscription end date %v", userSub.Subdate))
 

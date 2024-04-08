@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+	//"fmt"
 	"lms/models"
 	"lms/utils"
 )
@@ -68,11 +69,12 @@ func DeleteUser(db *sql.DB, user *models.User) error {
 }
 
 func UpdateSubscription(db *sql.DB, user models.User) error {
-	query := "update users set subscription_id=$1, subscription_end_date=$2 where id=$1"
-	_, err := db.Exec(query, user.Subid, user.Subdate, user.Userid)
+	query := "UPDATE users set subscription_id=$1 ,subscription_end_date=$2 where id=$3"
+	_, err := db.Exec(query, user.Subid, user.Subdate,user.Userid)
 	if err != nil {
 		return err
 	}
+	//fmt.Println(rows)
 	return nil
 }
 func Login(db *sql.DB,user *models.Login) error{

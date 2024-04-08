@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS users(
     email_address VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE ,
-    subscription_id INTEGER  REFERENCES subscription(id),
-    subscription_end_date DATE 
+    subscription_id INTEGER  REFERENCES subscription(id) ,
+    subscription_end_date DATE
 );
 CREATE TABLE IF NOT EXISTS book(
     id SERIAL PRIMARY KEY,
@@ -42,6 +42,6 @@ CREATE TABLE IF NOT EXISTS user_book_transaction(
     actual_return_date DATE NOT NULL
     );
 INSERT INTO subscription(name,duration,cost) VALUES('Monthly',30, 500),('Quarterly', 90, 1000),('Yearly', 365, 2000);
-INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES('admin',34,'admin@gmail.com','adminpass',true,1,'2024-03-20');
+INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES('admin',34,'admin@gmail.com','adminpass',true,3,'2006-01-02');
 
 --DROP TABLE subscription
