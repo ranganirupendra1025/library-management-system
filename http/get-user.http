@@ -1,3 +1,3 @@
-GET http://localhost:7111/getuser/1
+GET http://localhost:7111/getuser/2
 
 Content-Type: application/json

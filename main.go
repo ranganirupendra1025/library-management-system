@@ -34,7 +34,7 @@ func main() {
 	valid username then only it will be executed.*/
 	http.HandleFunc("/users", controller.GetAllUsers(DB))
 	http.HandleFunc("/lms/subscriptions", controller.GetAllSubscription(DB))
-	http.HandleFunc("/lms/subscribe", controller.SubscribeUser(DB))
+	http.HandleFunc("/lms/subscribe/", controller.SubscribeUser(DB))
 	http.HandleFunc("/registerusers", controller.RegisterUser(DB))
 	http.HandleFunc("/loginuser", controller.LoginUser(DB))
 	http.HandleFunc("/addbooks", controller.Addingbooks(DB))

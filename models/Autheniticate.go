@@ -1,5 +1,6 @@
 package models
 
 type UserAuth struct{
-	Username string
+	//Username string
+	Adminid int
 }
