@@ -1,11 +1,10 @@
 package models
 
-
-type Book struct{
-	Bookid int
-	Genre string
-	Author string
+type Book struct {
+	Id        int
+	Title     string
+	Genre     string
+	Author    string
 	Publisher string
-	Stockcount int
-
+	Stock     int
 }

@@ -1,10 +1,9 @@
 package models
 
-
 import "time"
 
 type User struct {
-	Userid   int
+	Id       int
 	Username string
 	Age      int
 	Email    string
@@ -13,4 +12,3 @@ type User struct {
 	Subid    int
 	Subdate  time.Time
 }
-
