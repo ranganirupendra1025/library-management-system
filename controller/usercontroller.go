@@ -86,7 +86,7 @@ func DeletingUser(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Authentication failed/Give username", http.StatusBadRequest)
 			return
 		}
-		users, err := service.Authenticate(userAuth, db)
+		users, err := service.Authenticate(userAuth.Username, db)
 		if err != nil {
 			http.Error(w, "Invalid username", http.StatusBadRequest)
 			return
@@ -108,16 +108,15 @@ func DeletingUser(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-
-func LoginUser(db *sql.DB) http.HandlerFunc{
+func LoginUser(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user models.Login
-		err:=json.NewDecoder(r.Body).Decode(&user)
-		if err!=nil{
-			http.Error(w,err.Error(),http.StatusBadRequest)
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
-		err=service.Login(db,&user)
-		if err!=nil{
+		err = service.Login(db, &user)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 
@@ -125,8 +124,5 @@ func LoginUser(db *sql.DB) http.HandlerFunc{
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "User login Successfully")
 
-
 	}
 }
-
-

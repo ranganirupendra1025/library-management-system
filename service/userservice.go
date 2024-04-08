@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+
 	//"fmt"
 	"lms/models"
 	"lms/utils"
@@ -21,7 +22,7 @@ func GettingUsers(db *sql.DB) ([]models.User, error) {
 	// Iterate through the result set
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.Userid, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin)
+		err := rows.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin)
 		if err != nil {
 			return nil, err
 		}
@@ -37,12 +38,12 @@ func GettingUsers(db *sql.DB) ([]models.User, error) {
 func RegisterUser(db *sql.DB, newUser models.User) error {
 	// Insert the new user into the database
 	query := "INSERT INTO users (username, age, email_address, password, is_admin) VALUES ($1, $2, $3, $4, $5)"
-	password,err:=utils.Hashpassword(newUser.Password)
+	password, err := utils.Hashpassword(newUser.Password)
 	if err != nil {
 		return err
 	}
-	_,err=db.Exec(query,newUser.Username, newUser.Age, newUser.Email, password, newUser.Isadmin)
-	if err!=nil {
+	_, err = db.Exec(query, newUser.Username, newUser.Age, newUser.Email, password, newUser.Isadmin)
+	if err != nil {
 		return err
 	}
 	return nil
@@ -52,7 +53,7 @@ func GetUser(db *sql.DB, id int) (*models.User, error) {
 	query := "SELECT  * FROM users WHERE  id = $1"
 	row := db.QueryRow(query, id)
 
-	err := row.Scan(&user.Userid, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
+	err := row.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func GetUser(db *sql.DB, id int) (*models.User, error) {
 }
 func DeleteUser(db *sql.DB, user *models.User) error {
 	query := "DELETE FROM users WHERE id=$1"
-	_, err := db.Exec(query, user.Userid)
+	_, err := db.Exec(query, user.Id)
 	if err != nil {
 		return err
 	}
@@ -70,27 +71,25 @@ func DeleteUser(db *sql.DB, user *models.User) error {
 
 func UpdateSubscription(db *sql.DB, user models.User) error {
 	query := "UPDATE users set subscription_id=$1 ,subscription_end_date=$2 where id=$3"
-	_, err := db.Exec(query, user.Subid, user.Subdate,user.Userid)
+	_, err := db.Exec(query, user.Subid, user.Subdate, user.Id)
 	if err != nil {
 		return err
 	}
 	//fmt.Println(rows)
 	return nil
 }
-func Login(db *sql.DB,user *models.Login) error{
-	query:="SELECT id,password from users where email_address=$1"
-	row:=db.QueryRow(query,&user.Email)
+func Login(db *sql.DB, user *models.Login) error {
+	query := "SELECT id,password from users where email_address=$1"
+	row := db.QueryRow(query, &user.Email)
 	var retrivedpass string
-	err:=row.Scan(&user.Id,&retrivedpass)
-	if err!=nil{
+	err := row.Scan(&user.Id, &retrivedpass)
+	if err != nil {
 		return err
 	}
-    passwordValid:=utils.Checkpassword(user.Password,retrivedpass)
+	passwordValid := utils.Checkpassword(user.Password, retrivedpass)
 	if !passwordValid {
-	return errors.New("credentials invalid")
+		return errors.New("credentials invalid")
 	}
 	return nil
-	
-
 
 }

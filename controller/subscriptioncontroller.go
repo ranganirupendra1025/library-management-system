@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"lms/models"
 	"lms/service"
 	"net/http"
@@ -24,25 +23,27 @@ func GetAllSubscription(db *sql.DB) http.HandlerFunc {
 
 func SubscribeUser(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		validationSuccess, body := service.ValidateAdmin(r, w, db)
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		var subDto models.SubscriptionDto
+		err = json.Unmarshal(body, &subDto)
+		validationSuccess := service.ValidateAdmin(r, w, db, subDto)
 		if !validationSuccess {
 			return
 		}
 
-		r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-		var userSub models.User
-		err := json.NewDecoder(r.Body).Decode(&userSub)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-	  subscription, err := service.GetSubscriptionById(db, userSub.Subid)
+		subscription, err := service.GetSubscriptionById(db, subDto.SubscriptionId)
 		if err != nil {
 			http.Error(w, "No subscription available with this id", http.StatusInternalServerError)
 			return
 		}
-	userSub.Subdate = <-time.After(time.Duration(subscription.Duration*24*60*60*10 ^ 9))
-	//fmt.Println(userSub)
+		var userSub models.User
+		userSub.Subdate = <-time.After(time.Duration(subscription.Duration*24*60*60*10 ^ 9))
+		//fmt.Println(userSub)
 		err = service.UpdateSubscription(db, userSub)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

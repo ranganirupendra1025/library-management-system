@@ -2,8 +2,6 @@ package service
 
 import (
 	"database/sql"
-	"encoding/json"
-	"io"
 	"lms/models"
 	"net/http"
 )
@@ -47,29 +45,17 @@ func GetSubscriptionById(db *sql.DB, id int) (models.Subscription, error) {
 
 }
 
-func ValidateAdmin(r *http.Request, w http.ResponseWriter, db *sql.DB) (bool, []byte) {
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return false, body
-	}
+func ValidateAdmin(r *http.Request, w http.ResponseWriter, db *sql.DB, subDto models.SubscriptionDto) bool {
 
-	var userAuth models.UserAuth
-	err = json.Unmarshal(body, &userAuth)
-	if err != nil {
-		http.Error(w, "Authentication failed/give username", http.StatusInternalServerError)
-		return false, body
-	}
-
-	user, err := Authenticate(userAuth, db)
+	user, err := Authenticate(subDto.UserName, db)
 	if err != nil {
 		http.Error(w, "No user with that name", http.StatusInternalServerError)
-		return false, body
+		return false
 	}
 	if !user.Isadmin {
 		http.Error(w, "Only Admin user can access", http.StatusBadRequest)
-		return false, body
+		return false
 
 	}
-	return true, body
+	return true
 }
