@@ -42,6 +42,8 @@ func SubscribeUser(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		var userSub models.User
+		userSub.Id = subDto.UserId
+		userSub.Subid = subDto.SubscriptionId
 		userSub.Subdate = <-time.After(time.Duration(subscription.Duration*24*60*60*10 ^ 9))
 		//fmt.Println(userSub)
 		err = service.UpdateSubscription(db, userSub)
