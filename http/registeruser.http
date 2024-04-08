@@ -7,4 +7,5 @@ Content-Type: application/json
    "email":"admin12@gmaail.com",
  "password":"12343534563",
  "is_admin":false
+
 }

@@ -1,2 +1,8 @@
 POST http://localhost:7111/subscribeuser
 Content-Type: application/json
+
+{
+    "Subid":2,
+    "Userid":2,
+     "Username":"admin"
+}
