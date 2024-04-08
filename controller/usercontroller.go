@@ -32,7 +32,7 @@ func GetSingleUser(db *sql.DB) http.HandlerFunc {
 			return
 
 		}
-
+      fmt.Println(id)
 		user, err := service.GetUser(db, id)
 		if err != nil {
 			http.Error(w, "No user found", http.StatusBadRequest)
@@ -83,12 +83,12 @@ func DeletingUser(db *sql.DB) http.HandlerFunc {
 		var userAuth models.UserAuth
 		err = json.NewDecoder(r.Body).Decode(&userAuth)
 		if err != nil {
-			http.Error(w, "Authentication failed/Give username", http.StatusBadRequest)
+			http.Error(w, "Authentication failed/Give Admin id", http.StatusBadRequest)
 			return
 		}
-		users, err := service.Authenticate(userAuth.Username, db)
+		users, err := service.Authenticate(userAuth.Adminid, db)
 		if err != nil {
-			http.Error(w, "Invalid username", http.StatusBadRequest)
+			http.Error(w, "Invalid id", http.StatusBadRequest)
 			return
 
 		}

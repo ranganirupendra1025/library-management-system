@@ -3,11 +3,12 @@ Content-Type: application/json
 
 
 {
+    "title":"title1",
     "genre":"genre1",
     "author":"author1",
     "publisher":"publisher1",
-    "stockcount":1000,
-    "username":"admin"
+    "stock":1000,
+     "Adminid":1
     
     
  

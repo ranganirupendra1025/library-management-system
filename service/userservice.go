@@ -13,7 +13,7 @@ import (
 
 func GettingUsers(db *sql.DB) ([]models.User, error) {
 	var users []models.User
-	rows, err := db.Query("SELECT id,username,age,email_address,password,is_admin FROM  users")
+	rows, err := db.Query("SELECT * FROM  users")
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func GettingUsers(db *sql.DB) ([]models.User, error) {
 	// Iterate through the result set
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin)
+		err := rows.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin,&user.Subid,&user.Subdate)
 		if err != nil {
 			return nil, err
 		}

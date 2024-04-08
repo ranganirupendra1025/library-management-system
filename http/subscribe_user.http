@@ -1,8 +1,7 @@
-POST http://localhost:7111//lms/subscribe
+POST http://localhost:7111/lms/subscribe/2
 Content-Type: application/json
 
 {
     "SubscriptionId":2,
-    "UserId":2,
-    "UserName":"admin"
+    "AdminId":1
 }

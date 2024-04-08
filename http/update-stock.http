@@ -3,8 +3,8 @@ Content-Type: application/json
 
 
 {
-    "Stockcount":10,
-    "username":"admin"
+    "Stock":10,
+    "Adminid":1
     
     
 }

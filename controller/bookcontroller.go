@@ -27,13 +27,13 @@ func Addingbooks(db *sql.DB) http.HandlerFunc {
 		// err = json.NewDecoder(r.Body).Decode(&userAuth)
 		err = json.Unmarshal(body, &userAuth)
 		if err != nil {
-			http.Error(w, "Authentication failed/give username", http.StatusInternalServerError)
+			http.Error(w, "Authentication failed/Give Admin id", http.StatusInternalServerError)
 			return
 		}
 
-		user, err := service.Authenticate(userAuth.Username, db)
+		user, err := service.Authenticate(userAuth.Adminid, db)
 		if err != nil {
-			http.Error(w, "No user with that name", http.StatusInternalServerError)
+			http.Error(w, "Invalid id", http.StatusInternalServerError)
 			return
 		}
 		if !user.Isadmin {
@@ -121,12 +121,12 @@ func UpdateStockBooks(db *sql.DB) http.HandlerFunc {
 		// err = json.NewDecoder(r.Body).Decode(&userAuth)
 		err = json.Unmarshal(body, &userAuth)
 		if err != nil {
-			http.Error(w, "Authentication failed/Give username", http.StatusUnauthorized)
+			http.Error(w, "Authentication failed/Give Adminid", http.StatusUnauthorized)
 			return
 		}
-		user, err := service.Authenticate(userAuth.Username, db)
+		user, err := service.Authenticate(userAuth.Adminid, db)
 		if err != nil {
-			http.Error(w, "No user with this name", http.StatusUnauthorized)
+			http.Error(w, "Invalid id", http.StatusUnauthorized)
 			return
 		}
 		if !user.Isadmin {
@@ -178,13 +178,13 @@ func Deletingbooks(db *sql.DB) http.HandlerFunc {
 		var userAuth models.UserAuth
 		err = json.NewDecoder(r.Body).Decode(&userAuth)
 		if err != nil {
-			http.Error(w, "Authentication failed/Give username", http.StatusBadRequest)
+			http.Error(w, "Authentication failed/Give Adminid", http.StatusBadRequest)
 			return
 
 		}
-		user, err := service.Authenticate(userAuth.Username, db)
+		user, err := service.Authenticate(userAuth.Adminid, db)
 		if err != nil {
-			http.Error(w, "No user with this name", http.StatusUnauthorized)
+			http.Error(w, "Invalid id", http.StatusUnauthorized)
 			return
 		}
 		if !user.Isadmin {

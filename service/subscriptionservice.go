@@ -47,7 +47,7 @@ func GetSubscriptionById(db *sql.DB, id int) (models.Subscription, error) {
 
 func ValidateAdmin(r *http.Request, w http.ResponseWriter, db *sql.DB, subDto models.SubscriptionDto) bool {
 
-	user, err := Authenticate(subDto.UserName, db)
+	user, err := Authenticate(subDto.AdminId, db)
 	if err != nil {
 		http.Error(w, "No user with that name", http.StatusInternalServerError)
 		return false

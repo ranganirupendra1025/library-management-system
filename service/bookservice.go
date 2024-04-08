@@ -16,7 +16,7 @@ func GettingBooks(db *sql.DB) ([]models.Book, error) {
 	// Iterate through the result set
 	for rows.Next() {
 		var book models.Book
-		err := rows.Scan(&book.Id, &book.Genre, &book.Author, &book.Publisher, &book.Stock)
+		err := rows.Scan(&book.Id,&book.Title, &book.Genre, &book.Author, &book.Publisher, &book.Stock)
 		if err != nil {
 			return nil, err
 		}
@@ -27,8 +27,8 @@ func GettingBooks(db *sql.DB) ([]models.Book, error) {
 }
 func Addbooks(db *sql.DB, book models.Book) error {
 	// Insert the new user into the database
-	query := "INSERT INTO book(genre,author,publisher,stock_count) VALUES ($1,$2,$3,$4)"
-	_, err := db.Exec(query, book.Genre, book.Author, book.Publisher, book.Stock)
+	query := "INSERT INTO book(title,genre,author,publisher,stock_count) VALUES ($1,$2,$3,$4,$5)"
+	_, err := db.Exec(query, book.Title,book.Genre, book.Author, book.Publisher, book.Stock)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func GetBook(db *sql.DB, id int) (*models.Book, error) {
 	query := "SELECT  * FROM book WHERE  id = $1"
 	row := db.QueryRow(query, id)
 
-	err := row.Scan(&book.Id, &book.Genre, &book.Author, &book.Publisher, &book.Stock)
+	err := row.Scan(&book.Id,&book.Title, &book.Genre, &book.Author, &book.Publisher, &book.Stock)
 	if err != nil {
 		return nil, err
 	}
@@ -66,10 +66,10 @@ func Delete(book *models.Book, db *sql.DB) error {
 
 }
 
-func Authenticate(username string, db *sql.DB) (*models.User, error) {
+func Authenticate(userid int, db *sql.DB) (*models.User, error) {
 	var user models.User
 
-	err := db.QueryRow("SELECT * from users where username=$1", username).Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
+	err := db.QueryRow("SELECT * from users where id=$1", userid).Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
 	if err != nil {
 		return nil, err
 	}
