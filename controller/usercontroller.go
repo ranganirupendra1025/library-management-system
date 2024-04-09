@@ -86,7 +86,7 @@ func DeletingUser(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Authentication failed/Give Admin id", http.StatusBadRequest)
 			return
 		}
-		users, err := service.Authenticate(userAuth.Adminid, db)
+		users, err := service.GetUser(db, userAuth.Adminid)
 		if err != nil {
 			http.Error(w, "Invalid id", http.StatusBadRequest)
 			return

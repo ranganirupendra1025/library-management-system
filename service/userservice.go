@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+	"net/http"
 
 	//"fmt"
 	"lms/models"
@@ -22,7 +23,7 @@ func GettingUsers(db *sql.DB) ([]models.User, error) {
 	// Iterate through the result set
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin,&user.Subid,&user.Subdate)
+		err := rows.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
 		if err != nil {
 			return nil, err
 		}
@@ -92,4 +93,19 @@ func Login(db *sql.DB, user *models.Login) error {
 	}
 	return nil
 
+}
+
+func ValidateAdmin(r *http.Request, w http.ResponseWriter, db *sql.DB, subDto models.SubscriptionDto) bool {
+
+	user, err := GetUser(db, subDto.AdminId)
+	if err != nil {
+		http.Error(w, "No user with that name", http.StatusInternalServerError)
+		return false
+	}
+	if !user.Isadmin {
+		http.Error(w, "Only Admin user can access", http.StatusBadRequest)
+		return false
+
+	}
+	return true
 }

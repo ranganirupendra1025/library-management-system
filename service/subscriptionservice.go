@@ -3,7 +3,6 @@ package service
 import (
 	"database/sql"
 	"lms/models"
-	"net/http"
 )
 
 //I have added refernce code for getting user from databse  u guys can change as per the requirement
@@ -43,19 +42,4 @@ func GetSubscriptionById(db *sql.DB, id int) (models.Subscription, error) {
 
 	return subscription, nil
 
-}
-
-func ValidateAdmin(r *http.Request, w http.ResponseWriter, db *sql.DB, subDto models.SubscriptionDto) bool {
-
-	user, err := Authenticate(subDto.AdminId, db)
-	if err != nil {
-		http.Error(w, "No user with that name", http.StatusInternalServerError)
-		return false
-	}
-	if !user.Isadmin {
-		http.Error(w, "Only Admin user can access", http.StatusBadRequest)
-		return false
-
-	}
-	return true
 }
