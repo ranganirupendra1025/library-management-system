@@ -11,14 +11,14 @@ import (
 //IssueBook issues a book to user
 func IssueBook(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var transaction models.Transaction
+		var transaction models.UserBookTransaction
 		err := json.NewDecoder(r.Body).Decode(&transaction)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		//Call the service  method to issue the book
-		err = service.IssueBook(transaction.UserID, transaction.BookID, db)
+		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -32,14 +32,14 @@ func IssueBook(db *sql.DB) http.HandlerFunc {
 //ReturnBook returns a book issued by user
 func ReturnBook(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var transaction models.Transaction
+		var transaction models.UserBookTransaction
 		err := json.NewDecoder(r.Body).Decode(&transaction)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		//Call the service  method to return the book
-		err = service.IssueBook(transaction.UserID, transaction.BookID, db)
+		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
