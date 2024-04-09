@@ -30,20 +30,27 @@ func main() {
 		log.Fatal(err)
 	}
 
-	/*initailly add books and check with delete update book api ,you need to pass
-	valid username then only it will be executed.*/
+	//user module APIs
+	http.HandleFunc("/registerusers", controller.RegisterUser(DB))
 	http.HandleFunc("/users", controller.GetAllUsers(DB))
+	http.HandleFunc("/getuser/", controller.GetSingleUser(DB))
+	http.HandleFunc("/deleteuser/", controller.DeletingUser(DB))
+	http.HandleFunc("/loginuser", controller.LoginUser(DB))
+
+	//subscription module APIs
 	http.HandleFunc("/lms/subscriptions", controller.GetAllSubscription(DB))
 	http.HandleFunc("/lms/subscribe/", controller.SubscribeUser(DB))
-	http.HandleFunc("/registerusers", controller.RegisterUser(DB))
-	http.HandleFunc("/loginuser", controller.LoginUser(DB))
+
+	//book module APIs
 	http.HandleFunc("/addbooks", controller.Addingbooks(DB))
 	http.HandleFunc("/books", controller.GetAllBooks(DB))
 	http.HandleFunc("/getbook/", controller.GetSingleBook(DB))
 	http.HandleFunc("/update/", controller.UpdateStockBooks(DB))
 	http.HandleFunc("/delete/", controller.Deletingbooks(DB))
-	http.HandleFunc("/getuser/", controller.GetSingleUser(DB))
-	http.HandleFunc("/deleteuser/", controller.DeletingUser(DB))
+
+	//issue and return  module APIs
+	http.HandleFunc("/issuebooks", controller.IssueBook(DB))
+	http.HandleFunc("/returnbooks", controller.ReturnBook(DB))
 
 	//server setup
 	err = http.ListenAndServe(":7111", nil)

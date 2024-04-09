@@ -31,7 +31,7 @@ func Addingbooks(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		user, err := service.Authenticate(userAuth.Adminid, db)
+		user, err := service.GetUser(db, userAuth.Adminid)
 		if err != nil {
 			http.Error(w, "Invalid id", http.StatusInternalServerError)
 			return
@@ -124,7 +124,7 @@ func UpdateStockBooks(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Authentication failed/Give Adminid", http.StatusUnauthorized)
 			return
 		}
-		user, err := service.Authenticate(userAuth.Adminid, db)
+		user, err := service.GetUser(db, userAuth.Adminid)
 		if err != nil {
 			http.Error(w, "Invalid id", http.StatusUnauthorized)
 			return
@@ -182,7 +182,7 @@ func Deletingbooks(db *sql.DB) http.HandlerFunc {
 			return
 
 		}
-		user, err := service.Authenticate(userAuth.Adminid, db)
+		user, err := service.GetUser(db, userAuth.Adminid)
 		if err != nil {
 			http.Error(w, "Invalid id", http.StatusUnauthorized)
 			return
