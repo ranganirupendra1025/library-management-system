@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS book(
     author VARCHAR(50) NOT NULL,
     publisher VARCHAR(50) NOT NULL,
     stock_count INTEGER NOT NULL
-    );
+);
  
 
 CREATE TABLE IF NOT EXISTS user_book_transaction(
@@ -37,12 +37,16 @@ CREATE TABLE IF NOT EXISTS user_book_transaction(
     user_id INTEGER NOT NULL REFERENCES users(id),
     book_id INTEGER NOT NULL REFERENCES book(id),        
     issued_date DATE NOT NULL,
-    return_date DATE NOT NULL ,
-    fineamt INTEGER NOT NULL,
-    book_return BOOLEAN DEFAULT FALSE,
-    actual_return_date DATE NOT NULL
-    );
-INSERT INTO subscription(name,duration,cost) VALUES('Monthly',30, 500),('Quarterly', 90, 1000),('Yearly', 365, 2000);
-INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES('admin',34,'admin@gmail.com','adminpass',true,3,'2006-01-02');
+    return_date DATE NOT NULL,
+    fine_amount INTEGER DEFAULT 0 NOT NULL,
+    return_status BOOLEAN DEFAULT FALSE,
+    actual_return_date DATE 
+);
+INSERT INTO subscription(name,duration,cost) VALUES
+    ('Monthly',30, 500),
+    ('Quarterly', 90, 1000),
+    ('Yearly', 365, 2000);
+INSERT INTO users(username,age,email_address,password,is_admin,subscription_id,subscription_end_date) VALUES
+    ('admin',34,'admin@gmail.com','adminpass',true,3,'2006-01-02');
 
 --DROP TABLE subscription
