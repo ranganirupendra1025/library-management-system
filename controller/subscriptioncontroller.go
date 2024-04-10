@@ -29,15 +29,14 @@ func SubscribeUser(db *sql.DB) http.HandlerFunc {
 		id, err := strconv.Atoi(idstr)
 
 		if err != nil {
-			http.Error(w, "No id specified", http.StatusBadRequest)
+			http.Error(w, "User detail is not specified", http.StatusBadRequest)
 			return
-
 		}
 
 		var subDto models.SubscriptionDto
 		err = json.NewDecoder(r.Body).Decode(&subDto)
 		if err != nil {
-			http.Error(w, "Authentication failed/Give Admin Id", http.StatusBadRequest)
+			http.Error(w, "Please give Admin Id", http.StatusBadRequest)
 			return
 		}
 
@@ -51,13 +50,20 @@ func SubscribeUser(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "No subscription available with this id", http.StatusInternalServerError)
 			return
 		}
-		var user models.User
-		user.Id = id
+
+		user, err := service.GetUser(db, id)
+		if err != nil {
+			http.Error(w, "No user available with this id", http.StatusInternalServerError)
+			return
+		}
 		user.Subid = subDto.SubscriptionId
-		time.Now()
-		user.Subdate = <-time.After(time.Duration(subscription.Duration*24*60*60*10 ^ 9))
+		if user.Subdate.IsZero() || user.Subdate.Before(time.Now()) {
+			user.Subdate = time.Now().AddDate(0, 0, subscription.Duration)
+		} else {
+			user.Subdate = user.Subdate.AddDate(0, 0, subscription.Duration)
+		}
 		//fmt.Println(userSub)
-		err = service.UpdateSubscription(db, user)
+		err = service.UpdateSubscription(db, *user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -66,7 +72,7 @@ func SubscribeUser(db *sql.DB) http.HandlerFunc {
 		//fmt.Fprintf(w, "Book was added")*/
 		//json.NewEncoder(w).Encode("User Subscrobed")
 
-		json.NewEncoder(w).Encode(fmt.Sprintf("User Subscribed Successsfully. Subscription end date %v", user.Subdate))
+		json.NewEncoder(w).Encode(fmt.Sprintf("User Subscribed Successfully. Subscription end date %v.\nPlease collect Rs.%d", user.Subdate, subscription.Cost))
 
 	}
 }
