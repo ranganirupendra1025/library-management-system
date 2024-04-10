@@ -1,0 +1,8 @@
+POST http://localhost:7111/returnbooks
+Content-Type: application/json
+
+
+{
+    "Userid":2,
+    "Bookid":1
+}

@@ -10,7 +10,7 @@ import (
 func IssueBook(userID, bookID int, db *sql.DB) error {
 
 	//Update Stock Count
-	_, err := db.Exec("UPDATE book SET stock=stock-1 WHERE id=$1", bookID)
+	_, err := db.Exec("UPDATE book SET stock_count=stock_count-1 WHERE id=$1", bookID)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func GetUserBooks(userId int, db *sql.DB) (*models.UserBookTransaction, error) {
 func ReturnBook(userID, bookID int, db *sql.DB) error {
 
 	//Update Stock Count
-	_, err := db.Exec("UPDATE books SET stock=stock+1 WHERE id=$1", bookID)
+	_, err := db.Exec("UPDATE books SET stock_count=stock_count+1 WHERE id=$1", bookID)
 	if err != nil {
 		return err
 	}
