@@ -3,6 +3,6 @@ Content-Type: application/json
 
 
 {
-    "username":"admin"
+    "Adminid":1
 }
 

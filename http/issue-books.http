@@ -1,0 +1,8 @@
+POST http://localhost:7111/issuebooks
+Content-Type: application/json
+
+
+{
+    "Userid":2,
+    "Bookid":1
+}

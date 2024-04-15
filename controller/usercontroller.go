@@ -35,7 +35,7 @@ func GetSingleUser(db *sql.DB) http.HandlerFunc {
       fmt.Println(id)
 		user, err := service.GetUser(db, id)
 		if err != nil {
-			http.Error(w, "No user found", http.StatusBadRequest)
+			http.Error(w,err.Error(), http.StatusBadRequest)
 			return
 
 		}
