@@ -57,6 +57,7 @@ func SubscribeUser(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		user.Subid = subDto.SubscriptionId
+		//this logic will add / renew subscription
 		if user.Subdate.IsZero() || user.Subdate.Before(time.Now()) {
 			user.Subdate = time.Now().AddDate(0, 0, subscription.Duration)
 		} else {
