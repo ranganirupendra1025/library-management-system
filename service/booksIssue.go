@@ -10,15 +10,13 @@ import (
 
 //IssueBook function is declared to issue a book to user and update transaction table
 func IssueBook(userID, bookID int, db *sql.DB) error {
-	userOverDueBooks, err := GetUserOverdueBooks(userId, db)
-	if (err==nil && userOverDueBooks !=nil) {
-		return errors.New(
-			"There are overdue books which are not yet returned by this user. Can't issue a new book."
-		)
+	userOverDueBooks, err := GetUserOverdueBooks(userID, db)
+	if err == nil && userOverDueBooks != nil {
+		return errors.New("There are overdue books which are not yet returned by this user. Can't issue a new book.")
 	}
 
 	//Update Stock Count
-	_, err := db.Exec("UPDATE book SET stock=stock-1 WHERE id=$1", bookID)
+	_, err = db.Exec("UPDATE book SET stock=stock-1 WHERE id=$1", bookID)
 	if err != nil {
 		return err
 	}
