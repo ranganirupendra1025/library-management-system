@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"lms/models"
+	"lms/utils"
 	"time"
 )
 
@@ -22,7 +23,7 @@ func IssueBook(userID, bookID int, db *sql.DB) error {
 		return err
 	}
 	//Insert entry into transaction table
-	_, err = db.Exec("INSERT INTO user_book_transaction(user_id,book_id,issued_date,return_date) VALUES($1,$2,$3,$4)", userID, bookID, time.Now(), time.Now().AddDate(0, 0, 15))
+	_, err = db.Exec("INSERT INTO user_book_transaction(user_id,book_id,issued_date,return_date) VALUES($1,$2,$3,$4)", userID, bookID, time.Now(), time.Now().AddDate(0, 0, utils.BookBorrowPeriodInDays))
 
 	if err != nil {
 		return err
