@@ -25,7 +25,6 @@ func IssueBook(userID, bookID int, db *sql.DB) error {
 
 func GetUserBooks(userId int, db *sql.DB) (*models.UserBookTransaction, error) {
 	//todo - Renewal and (Go Routine to calculate fineAmount periodically/ calculate fineamount and update in DB while returning userBook books)
-	//todo - when adding and renewing subscription, find a way to update the subscription end date
 	var userBook models.UserBookTransaction
 	query := "SELECT  * FROM users WHERE  id = $1"
 	row := db.QueryRow(query, userId)

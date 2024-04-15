@@ -47,7 +47,7 @@ func GetUserBooks(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-func GetUserPendingBooks(db *sql.DB) http.HandlerFunc {
+func GetUserDueBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
 		if err != nil {

@@ -52,7 +52,7 @@ func main() {
 	http.HandleFunc("/issuebooks", controller.IssueBook(DB))
 	http.HandleFunc("/returnbooks", controller.ReturnBook(DB))
 	http.HandleFunc("/userbooks/{userId}", controller.GetUserBooks(DB))
-	http.HandleFunc("/userpendingbooks/{userId}", controller.GetUserPendingBooks(DB))
+	http.HandleFunc("/userduebooks/{userId}", controller.GetUserDueBooks(DB))
 	http.HandleFunc("/useroverduebooks/{userId}", controller.GetUserOverdueBooks(DB))
 
 	//server setup
