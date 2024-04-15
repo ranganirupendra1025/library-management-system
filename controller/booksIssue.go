@@ -7,6 +7,9 @@ import (
 	"lms/service"
 	"net/http"
 	"strconv"
+	"time"
+	"fmt"
+	"lms/utils"
 )
 
 //IssueBook issues a book to user
@@ -18,21 +21,40 @@ func IssueBook(db *sql.DB) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		user, err := service.GetUser(db, transaction.UserId)
+		if err != nil {
+			http.Error(w, "No user available with this id", http.StatusInternalServerError)
+			return
+		}
 		//Call the service  method to issue the book
 		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		msg := ""
+		returnTime := time.Now().AddDate(0, 0, utils.BookBorrowPeriodInDays)
+		if user.Subdate.Before(time.Now()) {
+			msg = fmt.Sprint(" No active subscription for the user. Please collect Rs.%d", utils.BookBorrowPeriodInDays*utils.BookCostPerDay)
+		} else if returnTime.Before(user.Subdate) {
+			msg = " Active subscription available. User need not to pay any amount. "
+		} else {
+			msg = fmt.Sprintf(" Active subscription ends by %s. So please collect Rs.%d", (returnTime.Sub(user.Subdate).Hours()/24)*utils.BookCostPerDay)
+		}
+
 		//Respond with success
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Book Issued Successfully"})
+		json.NewEncoder(w).Encode("Book Issued Successfully." + msg)
 	}
 }
 
 func GetUserBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		idstr := r.URL.Path[len("/userbooks/"):]
+		id, err := strconv.Atoi(idstr)
+		// give userid in request url not user_book_transaction table id
+
 		if err != nil {
 			http.Error(w, "Please mention user id", http.StatusBadRequest)
 			return
@@ -46,17 +68,33 @@ func GetUserBooks(db *sql.DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(userBooks)
 	}
 }
+func GetAllUserBooks(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		userBooks, err := service.GetAllUsersBooks(db)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(userBooks)
+	}
+}
+
 
 func GetUserPendingBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		idstr := r.URL.Path[len("/userpendingbooks/"):]
+		id, err := strconv.Atoi(idstr)
+
 		if err != nil {
 			http.Error(w, "Please mention user id", http.StatusBadRequest)
 			return
 		}
 		userBooks, err := service.GetUserPendingBooks(id, db)
 		if err != nil {
-			http.Error(w, "No records found", http.StatusNotFound)
+			http.Error(w,"No records found", http.StatusNotFound)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -66,7 +104,10 @@ func GetUserPendingBooks(db *sql.DB) http.HandlerFunc {
 
 func GetUserOverdueBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		idstr := r.URL.Path[len("/useroverduebooks/"):]
+		id, err := strconv.Atoi(idstr)
+
 		if err != nil {
 			http.Error(w, "Please mention user id", http.StatusBadRequest)
 			return
@@ -91,7 +132,7 @@ func ReturnBook(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		//Call the service  method to return the book
-		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
+		err = service.ReturnBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
