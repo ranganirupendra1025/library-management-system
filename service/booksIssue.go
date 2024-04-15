@@ -2,12 +2,19 @@ package service
 
 import (
 	"database/sql"
+	"errors"
 	"lms/models"
 	"time"
 )
 
 //IssueBook function is declared to issue a book to user and update transaction table
 func IssueBook(userID, bookID int, db *sql.DB) error {
+	userOverDueBooks, err := GetUserOverdueBooks(userId, db)
+	if (err==nil && userOverDueBooks !=nil) {
+		return errors.New(
+			"There are overdue books which are not yet returned by this user. Can't issue a new book."
+		)
+	}
 
 	//Update Stock Count
 	_, err := db.Exec("UPDATE book SET stock=stock-1 WHERE id=$1", bookID)
@@ -25,6 +32,7 @@ func IssueBook(userID, bookID int, db *sql.DB) error {
 
 func GetUserBooks(userId int, db *sql.DB) (*models.UserBookTransaction, error) {
 	//todo - Renewal and (Go Routine to calculate fineAmount periodically/ calculate fineamount and update in DB while returning userBook books)
+	//todo - Set global variable for per day fine amount and per day book issue cost
 	var userBook models.UserBookTransaction
 	query := "SELECT  * FROM users WHERE  id = $1"
 	row := db.QueryRow(query, userId)

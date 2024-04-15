@@ -91,7 +91,7 @@ func ReturnBook(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		//Call the service  method to return the book
-		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
+		err = service.ReturnBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
