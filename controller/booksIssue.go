@@ -3,10 +3,13 @@ package controller
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"lms/models"
 	"lms/service"
+	"lms/utils"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 //IssueBook issues a book to user
@@ -18,15 +21,30 @@ func IssueBook(db *sql.DB) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		user, err := service.GetUser(db, transaction.UserId)
+		if err != nil {
+			http.Error(w, "No user available with this id", http.StatusInternalServerError)
+			return
+		}
 		//Call the service  method to issue the book
 		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		msg := ""
+		returnTime := time.Now().AddDate(0, 0, utils.BookBorrowPeriodInDays)
+		if user.Subdate.Before(time.Now()) {
+			msg = fmt.Sprint(" No active subscription for the user. Please collect Rs.%d", utils.BookBorrowPeriodInDays*utils.BookCostPerDay)
+		} else if returnTime.Before(user.Subdate) {
+			msg = " Active subscription available. User need not to pay any amount. "
+		} else {
+			msg = fmt.Sprintf(" Active subscription ends by %s. So please collect Rs.%d", (returnTime.Sub(user.Subdate).Hours()/24)*utils.BookCostPerDay)
+		}
+
 		//Respond with success
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Book Issued Successfully"})
+		json.NewEncoder(w).Encode("Book Issued Successfully." + msg)
 	}
 }
 
@@ -91,7 +109,7 @@ func ReturnBook(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		//Call the service  method to return the book
-		err = service.IssueBook(transaction.UserId, transaction.BookId, db)
+		err = service.ReturnBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
