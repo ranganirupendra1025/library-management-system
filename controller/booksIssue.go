@@ -3,13 +3,13 @@ package controller
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"lms/models"
 	"lms/service"
+	"lms/utils"
 	"net/http"
 	"strconv"
 	"time"
-	"fmt"
-	"lms/utils"
 )
 
 //IssueBook issues a book to user
@@ -81,7 +81,6 @@ func GetAllUserBooks(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-
 func GetUserPendingBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
@@ -94,7 +93,7 @@ func GetUserPendingBooks(db *sql.DB) http.HandlerFunc {
 		}
 		userBooks, err := service.GetUserPendingBooks(id, db)
 		if err != nil {
-			http.Error(w,"No records found", http.StatusNotFound)
+			http.Error(w, "No records found", http.StatusNotFound)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
