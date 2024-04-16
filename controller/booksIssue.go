@@ -3,13 +3,13 @@ package controller
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"lms/models"
 	"lms/service"
-	"lms/utils"
 	"net/http"
 	"strconv"
 	"time"
+	"fmt"
+	"lms/utils"
 )
 
 //IssueBook issues a book to user
@@ -50,7 +50,11 @@ func IssueBook(db *sql.DB) http.HandlerFunc {
 
 func GetUserBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		idstr := r.URL.Path[len("/userbooks/"):]
+		id, err := strconv.Atoi(idstr)
+		// give userid in request url not user_book_transaction table id
+
 		if err != nil {
 			http.Error(w, "Please mention user id", http.StatusBadRequest)
 			return
@@ -64,17 +68,33 @@ func GetUserBooks(db *sql.DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(userBooks)
 	}
 }
-
-func GetUserDueBooks(db *sql.DB) http.HandlerFunc {
+func GetAllUserBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		userBooks, err := service.GetAllUsersBooks(db)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(userBooks)
+	}
+}
+
+
+func GetUserPendingBooks(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		idstr := r.URL.Path[len("/userpendingbooks/"):]
+		id, err := strconv.Atoi(idstr)
+
 		if err != nil {
 			http.Error(w, "Please mention user id", http.StatusBadRequest)
 			return
 		}
 		userBooks, err := service.GetUserPendingBooks(id, db)
 		if err != nil {
-			http.Error(w, "No records found", http.StatusNotFound)
+			http.Error(w,"No records found", http.StatusNotFound)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -84,7 +104,10 @@ func GetUserDueBooks(db *sql.DB) http.HandlerFunc {
 
 func GetUserOverdueBooks(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		//id, err := strconv.Atoi(r.URL.Query().Get("userId"))
+		idstr := r.URL.Path[len("/useroverduebooks/"):]
+		id, err := strconv.Atoi(idstr)
+
 		if err != nil {
 			http.Error(w, "Please mention user id", http.StatusBadRequest)
 			return

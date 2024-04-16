@@ -51,10 +51,10 @@ func RegisterUser(db *sql.DB, newUser models.User) error {
 }
 func GetUser(db *sql.DB, id int) (*models.User, error) {
 	var user models.User
-	query := "SELECT  * FROM users WHERE  id = $1"
+	query := "SELECT  id,username,age,email_address,password,is_admin FROM users WHERE  id = $1"
 	row := db.QueryRow(query, id)
 
-	err := row.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
+	err := row.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin)
 	if err != nil {
 		return nil, err
 	}
