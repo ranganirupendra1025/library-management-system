@@ -2,16 +2,22 @@ package service
 
 import (
 	"database/sql"
+	"errors"
 	"lms/models"
-	"time"
 	"lms/utils"
+	"time"
 )
 
 //IssueBook function is declared to issue a book to user and update transaction table
 func IssueBook(userID, bookID int, db *sql.DB) error {
+	userOverDueBooks, err := GetUserOverdueBooks(userID, db)
+	if err == nil && userOverDueBooks != nil {
+		return errors.New("There are overdue books which are not yet returned by this user. Can't issue a new book.")
+	}
 
 	//Update Stock Count
-	_, err := db.Exec("UPDATE book SET stock_count=stock_count-1 WHERE id=$1", bookID)
+	_, err = db.Exec("UPDATE book SET stock_count=stock_count-1 WHERE id=$1", bookID)
+
 	if err != nil {
 		return err
 	}
@@ -33,32 +39,13 @@ func GetUserBooks(userId int, db *sql.DB) (*models.UserBookTransaction, error) {
 
 	row := db.QueryRow(query, userId)
 
-	err := row.Scan(&userBook.Id,&userBook.UserId, &userBook.BookId, &userBook.IssueDate, &userBook.ReturnDate, &userBook.FineAmount, &userBook.ReturnStatus)
+	err := row.Scan(&userBook.Id, &userBook.UserId, &userBook.BookId, &userBook.IssueDate, &userBook.ReturnDate, &userBook.FineAmount, &userBook.ReturnStatus)
 	if err != nil {
 		return nil, err
 	}
 	return &userBook, nil
 }
-func GetAllUsersBooks(db *sql.DB) ([]models.UserBookTransaction, error) {
-	var usersbook []models.UserBookTransaction
-	rows, err := db.Query("SELECT * FROM  user_book_transaction")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
 
-	// Iterate through the result set
-	for rows.Next() {
-		var userbook models.UserBookTransaction
-		err := rows.Scan(&userbook.Id,&userbook.UserId,&userbook.BookId,&userbook.IssueDate,&userbook.ReturnDate,&userbook.FineAmount,&userbook.ReturnStatus,&userbook.ActualReturnDate)
-		if err != nil {
-			return nil, err
-		}
-		usersbook = append(usersbook, userbook)
-
-	}
-	return usersbook, nil
-}
 func GetUserPendingBooks(userId int, db *sql.DB) (*models.UserBookTransaction, error) {
 	//todo - Renewal and (Go Routine to calculate fineAmount periodically/ calculate fineamount and update in DB while returning userBook books)
 	//todo - when adding and renewing subscription, find a way to update the subscription end date
@@ -66,7 +53,7 @@ func GetUserPendingBooks(userId int, db *sql.DB) (*models.UserBookTransaction, e
 	query := "SELECT id,user_id,book_id,issued_date,return_date,fine_amount,return_status  FROM user_book_transaction WHERE  user_id = $1 and return_status=false"
 	row := db.QueryRow(query, userId)
 
-	err := row.Scan(&userBook.Id,&userBook.UserId, &userBook.BookId, &userBook.IssueDate, &userBook.ReturnDate, &userBook.FineAmount, &userBook.ReturnStatus)
+	err := row.Scan(&userBook.Id, &userBook.UserId, &userBook.BookId, &userBook.IssueDate, &userBook.ReturnDate, &userBook.FineAmount, &userBook.ReturnStatus)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +67,7 @@ func GetUserOverdueBooks(userId int, db *sql.DB) (*models.UserBookTransaction, e
 	query := "SELECT id, user_id,book_id,issued_date,return_date,fine_amount,return_status  FROM user_book_transaction WHERE  id = $1 and return_status=false and return_date <= NOW()"
 	row := db.QueryRow(query, userId)
 
-	err := row.Scan( &userBook.Id,&userBook.UserId, &userBook.BookId, &userBook.IssueDate, &userBook.ReturnDate, &userBook.FineAmount, &userBook.ReturnStatus)
+	err := row.Scan(&userBook.Id, &userBook.UserId, &userBook.BookId, &userBook.IssueDate, &userBook.ReturnDate, &userBook.FineAmount, &userBook.ReturnStatus)
 	if err != nil {
 		return nil, err
 	}

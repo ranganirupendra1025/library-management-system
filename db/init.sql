@@ -14,13 +14,13 @@ DROP TABLE users;
 
 CREATE TABLE IF NOT EXISTS users(
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50)  NOT NULL,
+    username VARCHAR(50) NOT NULL,
     age INTEGER NOT NULL,
     email_address VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    is_admin BOOLEAN DEFAULT FALSE ,
-    subscription_id INTEGER  REFERENCES subscription(id) ,
-    subscription_end_date DATE
+    is_admin BOOLEAN DEFAULT FALSE,
+    subscription_id INTEGER REFERENCES subscription(id) ,
+    subscription_end_date DATE DEFAULT 00:00:00
 );
 CREATE TABLE IF NOT EXISTS book(
     id SERIAL PRIMARY KEY,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS user_book_transaction(
     return_date DATE NOT NULL,
     fine_amount INTEGER DEFAULT 0 NOT NULL,
     return_status BOOLEAN DEFAULT FALSE,
-    actual_return_date DATE 
+    actual_return_date DATE DEFAULT 00:00:00
 );
 INSERT INTO subscription(name,duration,cost) VALUES
     ('Monthly',30, 500),

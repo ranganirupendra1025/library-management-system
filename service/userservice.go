@@ -51,10 +51,10 @@ func RegisterUser(db *sql.DB, newUser models.User) error {
 }
 func GetUser(db *sql.DB, id int) (*models.User, error) {
 	var user models.User
-	query := "SELECT  id,username,age,email_address,password,is_admin FROM users WHERE  id = $1"
+	query := "SELECT  id,username,age,email_address,password,is_admin, coalesce(subscription_id, 0), subscription_end_date FROM users WHERE  id = $1"
 	row := db.QueryRow(query, id)
 
-	err := row.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin)
+	err := row.Scan(&user.Id, &user.Username, &user.Age, &user.Email, &user.Password, &user.Isadmin, &user.Subid, &user.Subdate)
 	if err != nil {
 		return nil, err
 	}
