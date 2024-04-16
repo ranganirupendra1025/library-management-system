@@ -7,6 +7,7 @@ import (
 	"lms/models"
 	"lms/service"
 	"lms/utils"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -40,7 +41,7 @@ func IssueBook(db *sql.DB) http.HandlerFunc {
 			msg = " Active subscription available. User need not to pay any amount. "
 		} else {
 			msg = fmt.Sprintf(" Active subscription ends by %s. So please collect Rs.%f",
-				user.Subdate, (returnTime.Sub(user.Subdate).Hours()/24)*utils.BookCostPerDay)
+				user.Subdate, math.Ceil(returnTime.Sub(user.Subdate).Hours()/24)*utils.BookCostPerDay)
 		}
 
 		//Respond with success
@@ -119,15 +120,30 @@ func ReturnBook(db *sql.DB) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		msg := ""
+
+		userBook, err := service.GetUserBook(transaction.UserId, transaction.BookId, db)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if userBook.ReturnDate.Before(time.Now()) {
+			msg = fmt.Sprintf(" Book should have returned on or before %s. Please collect the fine amount of Rs. %f as book returned late", userBook.ReturnDate, math.Ceil(time.Now().Sub(userBook.ReturnDate).Hours()/24)*utils.BookCostPerDay)
+		}
+
 		//Call the service  method to return the book
 		err = service.ReturnBook(transaction.UserId, transaction.BookId, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		//Respond with success
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Book Returned Successfully"})
+		json.NewEncoder(w).Encode("Book Returned Successfully." + msg)
 
 	}
 }
