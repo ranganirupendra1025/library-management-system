@@ -35,11 +35,12 @@ func IssueBook(db *sql.DB) http.HandlerFunc {
 		msg := ""
 		returnTime := time.Now().AddDate(0, 0, utils.BookBorrowPeriodInDays)
 		if user.Subdate.Before(time.Now()) {
-			msg = fmt.Sprint(" No active subscription for the user. Please collect Rs.%d", utils.BookBorrowPeriodInDays*utils.BookCostPerDay)
+			msg = fmt.Sprintf(" No active subscription for the user. Please collect Rs.%d", utils.BookBorrowPeriodInDays*utils.BookCostPerDay)
 		} else if returnTime.Before(user.Subdate) {
 			msg = " Active subscription available. User need not to pay any amount. "
 		} else {
-			msg = fmt.Sprint(" Active subscription ends by %s. So please collect Rs.%d", (returnTime.Sub(user.Subdate).Hours()/24)*utils.BookCostPerDay)
+			msg = fmt.Sprintf(" Active subscription ends by %s. So please collect Rs.%f",
+				user.Subdate, (returnTime.Sub(user.Subdate).Hours()/24)*utils.BookCostPerDay)
 		}
 
 		//Respond with success
