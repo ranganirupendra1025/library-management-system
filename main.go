@@ -51,9 +51,8 @@ func main() {
 	//issue and return  module APIs
 	http.HandleFunc("/issuebooks", controller.IssueBook(DB))
 	http.HandleFunc("/returnbooks", controller.ReturnBook(DB))
-	http.HandleFunc("/alluserbooks", controller.GetAllUserBooks(DB))
-    http.HandleFunc("/userbooks/", controller.GetUserBooks(DB))
-	http.HandleFunc("/userpendingbooks/", controller.GetUserPendingBooks(DB))
+	http.HandleFunc("/userbooks/", controller.GetUserBooks(DB))
+	http.HandleFunc("/userduebooks/", controller.GetUserDueBooks(DB))
 	http.HandleFunc("/useroverduebooks/", controller.GetUserOverdueBooks(DB))
 
 	//server setup
