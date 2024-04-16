@@ -131,7 +131,7 @@ func ReturnBook(db *sql.DB) http.HandlerFunc {
 		}
 
 		if userBook.ReturnDate.Before(time.Now()) {
-			msg = fmt.Sprintf(" Book should have returned on or before %s. Please collect the fine amount of Rs. %f as book returned late", userBook.ReturnDate, math.Ceil(time.Now().Sub(userBook.ReturnDate).Hours()/24)*utils.BookCostPerDay)
+			msg = fmt.Sprintf(" Book should have returned on or before %s. Please collect the fine amount of Rs. %f as book returned late", userBook.ReturnDate, math.Ceil(time.Since(userBook.ReturnDate).Hours()/24)*utils.FineAmountPerDay)
 		}
 
 		//Call the service  method to return the book
